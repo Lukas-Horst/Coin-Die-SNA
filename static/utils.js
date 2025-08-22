@@ -6,6 +6,8 @@ let getRequest = (url, query) => {
             data: query,
         }).done((data) => {
             resolve(data);
+        }).fail((jqXHR) => {
+            resolve(jqXHR.status);
         })
     })
 }

@@ -5,7 +5,7 @@ Social Network Analysis based on die studies of ancient coin collections and the
 ### Input Data
 Die data has to be provided as two JSON files for reverse and obverse in the `rsc` directory. The content must be in the form of key-value pairs where the key is the coin identifier and the value is the respective cluster identifier, e.g. `{ coin1: cluster1, coin2: cluster1, coin3: cluster2 }`.
 
-Findspot data is taken from the numisdata export expected in the project root directory as an CSV file named `numisdata.csv`. If you have a ground truth to compare with, also put it as an csv file named `die_ground_truth.csv` into the project root (Columns: coind_id, obverse_die, reverse_die).
+Findspot data is taken from the numisdata export expected in the project root directory as an CSV file named `numisdata_bushel.csv`. If you have a ground truth to compare with, also put it as an csv file named `die_ground_truth.csv` into the project root (Columns: coind_id, obverse_die, reverse_die).
 
 Additionally, provide the path to images of coin reverse and obverse in the `config.json` file, to view them in the web view.
 

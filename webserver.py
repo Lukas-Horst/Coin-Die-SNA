@@ -76,10 +76,22 @@ def start_sna_pipeline():
     try:
         social_network_analysis_pipeline(filterTime, filterAvRv)
     except:
-        print("==========", "ERROR in SNA pipline of " + filterTime + "_" + filterAvRv, "==========", sep="\n")
+        print("\033[91m Test" + 10 * "=", "[" + filterTime + "_" + filterAvRv + "] ERROR in SNA Pipeline", 10 * "=", "\033[00m")
         return jsonify({"text": filterTime + "_" + filterAvRv + " - ERROR"})
 
     return jsonify({"text": filterTime + "_" + filterAvRv})
+
+
+@app.route("/snapipelineall", methods=["POST"])
+def start_sna_pipeline_all():
+    for filterAvRv in ["", "r", "a"]:
+        for filterTime in ["X", "A", "B", "C", "D", "E", "F", "G", "H", "P", "U"]:
+            try:
+                social_network_analysis_pipeline(filterTime, filterAvRv)
+            except:
+                print("\033[91m" + 10 * "=", "[" + filterTime + "_" + filterAvRv + "] ERROR in SNA Pipeline", 10 * "=", "\033[00m")
+
+    return jsonify({"text": "All SNA Piplines finished"})
 
 
 @app.route("/cluster")

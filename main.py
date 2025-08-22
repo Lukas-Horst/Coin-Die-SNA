@@ -7,6 +7,7 @@ def social_network_analysis_pipeline(filterTime="X", filterAvRv=""):
     config = get_config()
 
     folder = filterTime + "_" + filterAvRv
+    print(10 * "=", "[" + folder + "] Starting SNA Pipeline", 10 * "=")
 
     # Graph Konstruktion
     if filterAvRv == "":
@@ -15,18 +16,20 @@ def social_network_analysis_pipeline(filterTime="X", filterAvRv=""):
         nodes, edges = construct_graph("rsc/" + config["dataset-obverse"], "a")
     elif filterAvRv == "r":
         nodes, edges = construct_graph("rsc/" + config["dataset-reverse"], "r")
-    print("Graph construction done for", folder)
+    print("[" + folder + "] Graph construction done")
 
     # Social Network Analysis
     short_edges = shorten_edges(edges)
     NetworkX_Graph = create_graph(short_edges, nodes, True, [] if filterTime == "X" else [filterTime])
     network_Analysis(NetworkX_Graph, folder)
     get_subgraphs(NetworkX_Graph, folder)
-    print("SNA done for", folder)
+    print("[" + folder + "] SNA done")
 
     # Export
     export_graph(NetworkX_Graph, folder)
-    print("Export done for", folder)
+    print("[" + folder + "] Export done")
+
+    print(10 * "=", "[" + folder + "] Finished SNA Pipeline", 10 * "=")
 
 
 if __name__ == "__main__":

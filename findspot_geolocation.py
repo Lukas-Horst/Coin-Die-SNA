@@ -56,12 +56,12 @@ def get_findspot_coordinate(findspot):
             geojson = get_findspot_geojson(findspot_alt)
             lat = geojson["features"][0]["geometry"]["coordinates"][1]
             lon = geojson["features"][0]["geometry"]["coordinates"][0]
-            print("Found alternative:", findspot_alt, "| instead of:", findspot)
+            # print("Found alternative:", findspot_alt, "| instead of:", findspot)
             return (lat, lon)
         except IndexError:
             pass
 
-    print("Not found:", findspot)
+    # print("Not found:", findspot)
     return (0, 0)
 
 

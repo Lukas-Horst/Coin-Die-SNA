@@ -118,18 +118,21 @@ let loadGraphs = async () => {
     time = timeMap[time];
     let avrv = $("#avrvfilter").val();
     
-    const graph_data = await getRequest("graphdata", { filterTime: time, filterAvRv: avrv });
-    console.log(graph_data);
+    const graphData = await getRequest("graphdata", { filterTime: time, filterAvRv: avrv });
+    if (graphData == 500) {
+        alert(`Error: Filter ${avrv} ${time} not available because of an error in the SNA pipeline`);
+        return;
+    }
 
     snaMetricsNode = await getRequest("snametricsnode", { filterTime: time, filterAvRv: avrv })
     const snaMetricsEdge = await getRequest("snametricsedge", { filterTime: time, filterAvRv: avrv })
 
     const communities = await getRequest("communities", { filterTime: time, filterAvRv: avrv })
 
-    let chart = fdGraph(graph_data, snaMetricsNode, snaMetricsEdge, communities);
+    let chart = fdGraph(graphData, snaMetricsNode, snaMetricsEdge, communities);
     $("#graph-container").html(chart);
 
-    initMap(graph_data, snaMetricsNode, snaMetricsEdge, communities);
+    initMap(graphData, snaMetricsNode, snaMetricsEdge, communities);
 }
 
 /**
@@ -173,7 +176,10 @@ $(() => {
     $("#start-sna").on("click", async (e) => {
         $("#sna-check").hide();
         $("#sna-spinner").show();
-        const promisesAvRv = Object.values(timeMap).map(val => postRequest("snapipeline", JSON.stringify({ filterTime: val, filterAvRv: "" })));
+        const result = await postRequest("snapipelineall", {});
+        console.log(result);
+        
+        /* const promisesAvRv = Object.values(timeMap).map(val => postRequest("snapipeline", JSON.stringify({ filterTime: val, filterAvRv: "" })));
         const responsesAvRv = await Promise.all(promisesAvRv);
         console.log(responsesAvRv);
 
@@ -183,7 +189,7 @@ $(() => {
 
         const promisesRv = Object.values(timeMap).map(val => postRequest("snapipeline", JSON.stringify({ filterTime: val, filterAvRv: "r" })));
         const responsesRv = await Promise.all(promisesRv);
-        console.log(responsesRv);
+        console.log(responsesRv); */
         
         $("#sna-spinner").hide();
         $("#sna-check").show();
