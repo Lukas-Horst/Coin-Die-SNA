@@ -10,8 +10,8 @@ from config import get_config
 
 
 def shorten_edges(edge_list):
-    '''Some coins have unknown findspots. This in turn leads to some edges lying between a coin-cluster and an empry string. To prevent having the unknown findspot also as node
-    in the chart this function is used to filter those edges out before creating the NetworkX chart'''
+    """Some coins have unknown findspots. This in turn leads to some edges lying between a coin-cluster and an empry string. To prevent having the unknown findspot also as node
+    in the chart this function is used to filter those edges out before creating the NetworkX chart"""
     two_values_edge = [(a, b) for (a, b, _) in edge_list]
     pattern = re.compile(r"^\d{1,4}_[a-zA-Z]$")
     # remove Edges where one of the nodes is '' (Ignoring Clusters or Cluster edges that have no findspot)
@@ -22,7 +22,9 @@ def shorten_edges(edge_list):
 
 
 def create_graph(edge_list, node_list, remove_low_degree_clusters, filter=[]):
-    '''Function to create a NetworkX chart that serves als the basis for visualisation'''
+    """Function to create a NetworkX chart that serves als the basis for visualisation"""
+    if filter is None:
+        filter = []
     network_graph = nx.Graph()
     network_graph.add_edges_from(edge_list)
 
@@ -60,8 +62,8 @@ def create_graph(edge_list, node_list, remove_low_degree_clusters, filter=[]):
     return network_graph
 
 
-def network_Analysis(graph, save_directory):
-    '''Calculates and saves SNA metrics for edges and nodes'''
+def network_analysis(graph, save_directory):
+    """Calculates and saves SNA metrics for edges and nodes"""
 
     degree_centrality = nx.degree_centrality(graph)
 
@@ -69,7 +71,7 @@ def network_Analysis(graph, save_directory):
 
     betweenness_centrality = nx.betweenness_centrality(graph)
 
-    eigenvector_centrality = nx.eigenvector_centrality(graph)
+    eigenvector_centrality = nx.eigenvector_centrality(graph, max_iter=1000)
 
     pagerank = nx.pagerank(graph)
 
@@ -115,7 +117,7 @@ def network_Analysis(graph, save_directory):
 
 
 def get_subgraphs(graph, save_directory):
-    '''Searches and saves communities found in a NetworkX chart.'''
+    """Searches and saves communities found in a NetworkX chart."""
 
     directory = "subgraphs"
     full_directory = os.path.join(directory, save_directory)
@@ -152,7 +154,7 @@ def get_subgraphs(graph, save_directory):
 
 
 def export_graph(graph, save_directory):
-    '''Export a NetworkX chart'''
+    """Export a NetworkX chart"""
     data1 = nx.node_link_data(graph, edges="edges")
     json_graph = json.dumps(data1, indent=4)
     directory = os.path.join("graph_export", save_directory, "networkx_export.json")
@@ -171,7 +173,7 @@ if __name__ == "__main__":
 
     NetworkX_Graph = create_graph(short_edges, nodes, True)
 
-    network_Analysis(NetworkX_Graph, "full")
+    network_analysis(NetworkX_Graph, "full")
 
     get_subgraphs(NetworkX_Graph, "full")
 
@@ -180,7 +182,7 @@ if __name__ == "__main__":
 
     NetworkX_Graph_A = create_graph(short_edges, nodes, True, ["A"])
 
-    network_Analysis(NetworkX_Graph_A, "A")
+    network_analysis(NetworkX_Graph_A, "A")
 
     get_subgraphs(NetworkX_Graph_A, "A")
 
@@ -189,7 +191,7 @@ if __name__ == "__main__":
 
     NetworkX_Graph_AB = create_graph(short_edges, nodes, True, ["A", "B"])
 
-    network_Analysis(NetworkX_Graph_AB, "AB")
+    network_analysis(NetworkX_Graph_AB, "AB")
 
     get_subgraphs(NetworkX_Graph_AB, "AB")
 

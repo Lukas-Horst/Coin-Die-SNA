@@ -143,8 +143,8 @@ if __name__ == "__main__":
     cluster_gt_neuses_r = get_cluster_assignments_csv("die_ground_truth.csv", side="r")
     cluster_gt_neuses_a = get_cluster_assignments_csv("die_ground_truth.csv", side="a")
 
-    ri_r, ari_r, ami_r = check_gt_file("rsc/" + config["dataset-reverse"])
-    ri_a, ari_a, ami_a = check_gt_file("rsc/" + config["dataset-obverse"])
+    ri_r, ari_r, ami_r = check_gt_file("rsc/" + config["dataset-reverse"], "r")
+    ri_a, ari_a, ami_a = check_gt_file("rsc/" + config["dataset-obverse"], "a")
     print("Reverse RI:", ri_r)
     print("Reverse ARI:", ari_r)
     print("Obverse RI:", ri_a)
