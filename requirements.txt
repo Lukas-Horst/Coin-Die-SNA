@@ -1,0 +1,10 @@
+Flask
+networkx
+regex
+numpy
+scikit-learn
+matplotlib
+torch
+scikit-image
+opencv-python
+requests
