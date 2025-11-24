@@ -33,7 +33,9 @@ def get_cluster_assignments_csv(cluster_csv, side="r"):
     clusters_raw = {}
     with open(cluster_csv, "r") as cluster_file:
         _ = next(cluster_file)
-        cluster_reader = csv.reader(cluster_file, delimiter=";")
+        dialect = csv.Sniffer().sniff(cluster_file.read(1024)) # Reads the first 1024 Bytes, to get the dialect
+        cluster_file.seek(0) # Setting the pointer back to the start
+        cluster_reader = csv.reader(cluster_file, dialect)
         for row in cluster_reader:
             clusters_raw[row[0]] = row[col_index]
 

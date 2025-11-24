@@ -16,7 +16,9 @@ def get_findspots():
     findspots = dict()
     with open("numisdata_bushel.csv", "r") as numisdata_file:
         _ = next(numisdata_file)
-        numisdata = csv.reader(numisdata_file, delimiter=";")
+        dialect = csv.Sniffer().sniff(numisdata_file.read(1024))
+        numisdata_file.seek(0)
+        numisdata = csv.reader(numisdata_file, dialect)
         for row in numisdata:
             fs = row[13]
             count = 1
@@ -33,7 +35,9 @@ def get_coin_findspots():
     coin_findspots = {}
     with open("numisdata_bushel.csv", "r") as numisdata_file:
         _ = next(numisdata_file)
-        numisdata = csv.reader(numisdata_file, delimiter=";")
+        dialect = csv.Sniffer().sniff(numisdata_file.read(1024))
+        numisdata_file.seek(0)
+        numisdata = csv.reader(numisdata_file, dialect)
         for row in numisdata:
             coin_findspots[row[0]] = row[13]
 
