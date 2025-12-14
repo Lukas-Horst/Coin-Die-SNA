@@ -1,0 +1,3 @@
+[submodule "Coin-Die-SNA-Interface"]
+	path = Coin-Die-SNA-Interface
+	url = https://github.com/Lukas-Horst/Coin-Die-SNA-Interface.git

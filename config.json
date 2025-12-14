@@ -1,7 +1,7 @@
 {
     "dataset-obverse": "die_studie_obverse_12_aglp.json",
-    "dataset-reverse": "die_studie_reverse_10_projhdbscan.json",
-    "images-obverse": "D:/Data Challenges/DataChallenge2025_bueschelquinare/obverse",
-    "images-reverse": "D:/Data Challenges/DataChallenge2025_bueschelquinare/reverse",
-    "auto-die-studies-path": ""
+    "dataset-reverse": "die_studie_reverse_14_projhdbscan.json",
+    "images-obverse": "D:/Uni/7. Semester/BA/Schnittstelle/Coin-Die-SNA-Data/DataChallenge2025_bueschelquinare/obverse",
+    "images-reverse": "D:/Uni/7. Semester/BA/Schnittstelle/Coin-Die-SNA-Data/DataChallenge2025_bueschelquinare/reverse",
+    "auto-die-studies-path": "D:/Uni/7. Semester/BA/Schnittstelle/Auto-Die-Studies"
 }
