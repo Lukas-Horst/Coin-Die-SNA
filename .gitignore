@@ -10,3 +10,6 @@ SNA_results
 !config.json
 !static/logo.png
 config.json
+/Coin-Die-SNA-Interface/results/
+/results/
+/Cache/

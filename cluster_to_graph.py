@@ -1,8 +1,9 @@
 import json
 import csv
 import os.path
+
+from config.config_manager import ConfigManager
 from findspot_geolocation import get_findspot_coordinate
-from config import get_config
 import glob
 import matplotlib
 
@@ -11,10 +12,14 @@ import matplotlib.pyplot as plt
 import io
 
 
+config_manager = ConfigManager('Coin-Die-SNA-Interface/config/config.json')
+config = config_manager.config
+
+
 def get_findspots():
     """Returns { findspot: (coin_count, type) } dict"""
     findspots = dict()
-    with open("numisdata_bushel.csv", "r") as numisdata_file:
+    with open(config['paths']['findspot_data'], "r") as numisdata_file:
         _ = next(numisdata_file)
         dialect = csv.Sniffer().sniff(numisdata_file.read(1024))
         numisdata_file.seek(0)
@@ -33,7 +38,7 @@ def get_findspots():
 def get_coin_findspots():
     """Returns { coind_id: findspot } dict"""
     coin_findspots = {}
-    with open("numisdata_bushel.csv", "r") as numisdata_file:
+    with open(config['paths']['findspot_data'], "r") as numisdata_file:
         _ = next(numisdata_file)
         dialect = csv.Sniffer().sniff(numisdata_file.read(1024))
         numisdata_file.seek(0)
@@ -110,8 +115,7 @@ def get_cluster_times(clusters, side):
     Return { cluster_id: allen_type }
     clusters: { cluster_id : [coin_id] }
     """
-    config = get_config()
-    folder = config["images-reverse"] if side == "r" else config["images-obverse"]
+    folder = config["paths"]["images_reverse"] if side == "r" else config["paths"]["images_obverse"]
 
     img_paths = glob.glob(folder + "/**/*")
 
@@ -180,16 +184,16 @@ def construct_graph_both_sides(cluster_file_r, cluster_file_a):
     edges = list(set(edges_r) | set(edges_a))
 
     # Connect reverse and obverse cluster
-    """ with open(cluster_file_r, "r") as cluster_file_r_json:
-        cluster_raw_r = json.load(cluster_file_r_json)
-    with open(cluster_file_a, "r") as cluster_file_a_json:
-        cluster_raw_a = json.load(cluster_file_a_json)
-
-    for coin_r, cluster_r in cluster_raw_r.items():
-        for coin_a, cluster_a in cluster_raw_a.items():
-            if coin_a == coin_r:
-                edge = (cluster_r + "_r", cluster_a + "_a", 1)
-                edges.append(edge) """
+    # with open(cluster_file_r, "r") as cluster_file_r_json:
+    #     cluster_raw_r = json.load(cluster_file_r_json)
+    # with open(cluster_file_a, "r") as cluster_file_a_json:
+    #     cluster_raw_a = json.load(cluster_file_a_json)
+    #
+    # for coin_r, cluster_r in cluster_raw_r.items():
+    #     for coin_a, cluster_a in cluster_raw_a.items():
+    #         if coin_a == coin_r:
+    #             edge = (cluster_r + "_r", cluster_a + "_a", 1)
+    #             edges.append(edge)
 
     print(len(nodes), "Clusters")
     print(len(edges), "Edges")
@@ -239,12 +243,4 @@ def get_findspot_coordinates(findspots):
 
 
 if __name__ == "__main__":
-    config = get_config()
-
-    nodes, edges = construct_graph_both_sides("rsc/" + config["dataset-reverse"], "rsc/" + config["dataset-obverse"])
-
-    # print(nodes)
-    # print(edges)
-
-    # clusters = imagecluster_get_cluster("rsc/" + config["dataset-reverse"], "r")
-    # plot_coint_per_die(clusters)
+    pass

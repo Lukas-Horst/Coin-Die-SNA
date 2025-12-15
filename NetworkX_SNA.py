@@ -6,15 +6,16 @@ import os
 
 from cluster_to_graph import construct_graph_both_sides
 from networkx.algorithms.community import greedy_modularity_communities
-from config import get_config
 
 
 def shorten_edges(edge_list):
-    """Some coins have unknown findspots. This in turn leads to some edges lying between a coin-cluster and an empry string. To prevent having the unknown findspot also as node
-    in the chart this function is used to filter those edges out before creating the NetworkX chart"""
+    """Some coins have unknown findspots. This in turn leads to some edges lying between a
+    coin-cluster and an empty string. To prevent having the unknown findspot also as node in the
+    chart this function is used to filter those edges out before creating the NetworkX chart"""
     two_values_edge = [(a, b) for (a, b, _) in edge_list]
     pattern = re.compile(r"^\d{1,4}_[a-zA-Z]$")
-    # remove Edges where one of the nodes is '' (Ignoring Clusters or Cluster edges that have no findspot)
+    # remove Edges where one of the nodes is '' (Ignoring Clusters or Cluster edges that have no
+    # findspot)
     filtered_two_value_edge = [(c, d) for (c, d) in two_values_edge if c != "" and d != ""]
     # only keep edges between a cluster and a place
     relevant_edges = [(e, f) for (e, f) in filtered_two_value_edge if not (pattern.match(e) and pattern.match(f))]
@@ -28,7 +29,8 @@ def create_graph(edge_list, node_list, remove_low_degree_clusters, filter=[]):
     network_graph = nx.Graph()
     network_graph.add_edges_from(edge_list)
 
-    # removes coin cluster that are only connected to one findspot since those don't say anything about social networks of that time
+    # removes coin cluster that are only connected to one findspot since those don't say
+    # anything about social networks of that time
     if remove_low_degree_clusters:
         pattern = re.compile(r"^\d{1,4}_[a-zA-Z]$")
         removal = [node for node in network_graph.nodes() if network_graph.degree(node) == 1 and pattern.match(node)]
@@ -52,7 +54,8 @@ def create_graph(edge_list, node_list, remove_low_degree_clusters, filter=[]):
                 }
     nx.set_node_attributes(network_graph, attributes)
     
-    #  Filters Graph to only contain coins from certain time period if it was requested to do so when calling the function
+    # Filters Graph to only contain coins from certain time period if it was requested to do so
+    # when calling the function
     if len(filter) > 0:
         removal_filter = [entry for entry, attributes in network_graph.nodes(data=True) if attributes.get("type") == "Cluster" and attributes.get("time_frame") not in filter]
         network_graph.remove_nodes_from(removal_filter)
@@ -104,8 +107,8 @@ def network_analysis(graph, save_directory):
         key = tuple(sorted((a, b)))
         sna_edge_metrics.append({"From": a, "To": b, "edge_betweeness_centrality": edge_betweeness_centrality.get(key, 0), "edge_load_centrality": edge_load_centrality.get(key, 0)})
 
-    node_path = os.path.join(r"SNA_results", save_directory, r"node_sna_metrics.json")
-    edge_path = os.path.join(r"SNA_results", save_directory, r"edge_sna_metrics.json")
+    node_path = os.path.join(r"Cache/SNA_results", save_directory, r"node_sna_metrics.json")
+    edge_path = os.path.join(r"Cache/SNA_results", save_directory, r"edge_sna_metrics.json")
 
     os.makedirs(os.path.dirname(node_path), exist_ok=True)
 
@@ -119,7 +122,7 @@ def network_analysis(graph, save_directory):
 def get_subgraphs(graph, save_directory):
     """Searches and saves communities found in a NetworkX chart."""
 
-    directory = "subgraphs"
+    directory = "Cache/subgraphs"
     full_directory = os.path.join(directory, save_directory)
     os.makedirs(os.path.dirname(full_directory), exist_ok=True)
 
@@ -157,7 +160,7 @@ def export_graph(graph, save_directory):
     """Export a NetworkX chart"""
     data1 = nx.node_link_data(graph, edges="edges")
     json_graph = json.dumps(data1, indent=4)
-    directory = os.path.join("graph_export", save_directory, "networkx_export.json")
+    directory = os.path.join("Cache/graph_export", save_directory, "networkx_export.json")
 
     os.makedirs(os.path.dirname(directory), exist_ok=True)
 
@@ -166,34 +169,4 @@ def export_graph(graph, save_directory):
 
 
 if __name__ == "__main__":
-    config = get_config()
-    nodes, edges = construct_graph_both_sides("rsc/" + config["dataset-reverse"], "rsc/" + config["dataset-obverse"])
-
-    short_edges = shorten_edges(edges)
-
-    NetworkX_Graph = create_graph(short_edges, nodes, True)
-
-    network_analysis(NetworkX_Graph, "full")
-
-    get_subgraphs(NetworkX_Graph, "full")
-
-    print(NetworkX_Graph)
-    export_graph(NetworkX_Graph, "full")
-
-    NetworkX_Graph_A = create_graph(short_edges, nodes, True, ["A"])
-
-    network_analysis(NetworkX_Graph_A, "A")
-
-    get_subgraphs(NetworkX_Graph_A, "A")
-
-    print(NetworkX_Graph_A)
-    export_graph(NetworkX_Graph_A, "A")
-
-    NetworkX_Graph_AB = create_graph(short_edges, nodes, True, ["A", "B"])
-
-    network_analysis(NetworkX_Graph_AB, "AB")
-
-    get_subgraphs(NetworkX_Graph_AB, "AB")
-
-    print(NetworkX_Graph_A)
-    export_graph(NetworkX_Graph_AB, "AB")
+    pass

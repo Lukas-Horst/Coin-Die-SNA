@@ -3,7 +3,11 @@ import csv
 import collections
 from math import comb
 from sklearn.metrics import adjusted_mutual_info_score
-from config import get_config
+
+from config.config_manager import ConfigManager
+
+config_manager = ConfigManager('Coin-Die-SNA-Interface/config/config.json')
+config = config_manager.config
 
 
 def get_cluster_assignments_json(cluster_json):
@@ -116,6 +120,9 @@ def ari(c1, c2, elements):
 
 def check_gt(cluster_pred, cluster_true):
     intersect = list(set(cluster_pred) & set(cluster_true))
+    if len(intersect) == 0:  # Bug fix for an empty intersection
+        return 0, 0, 0
+
     ri_score = ri(cluster_pred, cluster_true, intersect)
     ari_score = ari(cluster_pred, cluster_true, intersect)
 
@@ -130,7 +137,7 @@ def check_gt(cluster_pred, cluster_true):
 def check_gt_file(pred_file, coin_side):
     cluster_imagecluster = get_cluster_assignments_json(pred_file)
     try:
-        cluster_gt_neuses = get_cluster_assignments_csv("die_ground_truth.csv", side=coin_side)
+        cluster_gt_neuses = get_cluster_assignments_csv(config['paths']['die_ground_truth'], side=coin_side)
     except FileNotFoundError:
         return (0, 0, 0)
 
@@ -138,23 +145,24 @@ def check_gt_file(pred_file, coin_side):
 
 
 if __name__ == "__main__":
-    config = get_config()
-
-    cluster_imagecluster_r = get_cluster_assignments_json("rsc/" + config["dataset-reverse"])
-    cluster_imagecluster_a = get_cluster_assignments_json("rsc/" + config["dataset-obverse"])
-    cluster_gt_neuses_r = get_cluster_assignments_csv("die_ground_truth.csv", side="r")
-    cluster_gt_neuses_a = get_cluster_assignments_csv("die_ground_truth.csv", side="a")
-
-    ri_r, ari_r, ami_r = check_gt_file("rsc/" + config["dataset-reverse"], "r")
-    ri_a, ari_a, ami_a = check_gt_file("rsc/" + config["dataset-obverse"], "a")
-    print("Reverse RI:", ri_r)
-    print("Reverse ARI:", ari_r)
-    print("Obverse RI:", ri_a)
-    print("Obverse ARI:", ari_a)
-
-    intersect = list(set(cluster_imagecluster_r) & set(cluster_gt_neuses_r))
-    with open("neuses_matches.csv", "w", newline="") as matchfile:
-        writer = csv.writer(matchfile)
-        writer.writerow(["Id", "Av", "Rv"])
-        for coin in intersect:
-            writer.writerow([coin, cluster_imagecluster_a[coin],  cluster_imagecluster_r[coin]])
+    pass
+    # config = get_config()
+    #
+    # cluster_imagecluster_r = get_cluster_assignments_json("rsc/" + config["dataset-reverse"])
+    # cluster_imagecluster_a = get_cluster_assignments_json("rsc/" + config["dataset-obverse"])
+    # cluster_gt_neuses_r = get_cluster_assignments_csv("die_ground_truth.csv", side="r")
+    # cluster_gt_neuses_a = get_cluster_assignments_csv("die_ground_truth.csv", side="a")
+    #
+    # ri_r, ari_r, ami_r = check_gt_file("rsc/" + config["dataset-reverse"], "r")
+    # ri_a, ari_a, ami_a = check_gt_file("rsc/" + config["dataset-obverse"], "a")
+    # print("Reverse RI:", ri_r)
+    # print("Reverse ARI:", ari_r)
+    # print("Obverse RI:", ri_a)
+    # print("Obverse ARI:", ari_a)
+    #
+    # intersect = list(set(cluster_imagecluster_r) & set(cluster_gt_neuses_r))
+    # with open("neuses_matches.csv", "w", newline="") as matchfile:
+    #     writer = csv.writer(matchfile)
+    #     writer.writerow(["Id", "Av", "Rv"])
+    #     for coin in intersect:
+    #         writer.writerow([coin, cluster_imagecluster_a[coin],  cluster_imagecluster_r[coin]])
