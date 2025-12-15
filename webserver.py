@@ -49,7 +49,8 @@ def graphdata_api():
     filterTime = request.args.get("filterTime", "X")
     filterAvRv = request.args.get("filterAvRv", "")
 
-    file_path = f"Cache/graph_export/{filterTime}_{filterAvRv}/networkx_export.json"
+    file_path = (f"Cache/graph_export/{config_manager.get_combined_analysis_file_name()}/"
+                 f"{filterTime}_{filterAvRv}/networkx_export.json")
 
     if not os.path.exists(file_path):
         # Prevent crash if SNA pipeline hasn't run yet for this combination
@@ -355,7 +356,8 @@ def snametrics_node():
     filterTime = request.args.get("filterTime", "X")
     filterAvRv = request.args.get("filterAvRv", "")
 
-    file_path = f"Cache/SNA_results/{filterTime}_{filterAvRv}/node_sna_metrics.json"
+    file_path = (f"Cache/SNA_results/{config_manager.get_combined_analysis_file_name()}/"
+                 f"{filterTime}_{filterAvRv}/node_sna_metrics.json")
 
     if not os.path.exists(file_path):
         print(
@@ -386,7 +388,8 @@ def snametrics_edge():
     filterTime = request.args.get("filterTime", "X")
     filterAvRv = request.args.get("filterAvRv", "")
 
-    file_path = f"Cache/SNA_results/{filterTime}_{filterAvRv}/edge_sna_metrics.json"
+    file_path = (f"Cache/SNA_results/{config_manager.get_combined_analysis_file_name()}/"
+                 f"{filterTime}_{filterAvRv}/edge_sna_metrics.json")
 
     if not os.path.exists(file_path):
         print(
@@ -418,7 +421,8 @@ def communities():
     filterTime = request.args.get("filterTime", "X")
     filterAvRv = request.args.get("filterAvRv", "")
 
-    file_path = f"Cache/subgraphs/{filterTime}_{filterAvRv}/community_data.json"
+    file_path = (f"Cache/subgraphs/{config_manager.get_combined_analysis_file_name()}/"
+                 f"{filterTime}_{filterAvRv}/community_data.json")
 
     if not os.path.exists(file_path):
         print(
