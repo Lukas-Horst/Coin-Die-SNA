@@ -10,6 +10,7 @@ from networkx.algorithms.community import greedy_modularity_communities
 from config.config_manager import ConfigManager
 
 config_manager = ConfigManager('Coin-Die-SNA-Interface/config/config.json')
+cache_dir = config_manager.config["paths"]["cache_dir"]
 
 
 def shorten_edges(edge_list):
@@ -111,9 +112,11 @@ def network_analysis(graph, save_directory):
         key = tuple(sorted((a, b)))
         sna_edge_metrics.append({"From": a, "To": b, "edge_betweeness_centrality": edge_betweeness_centrality.get(key, 0), "edge_load_centrality": edge_load_centrality.get(key, 0)})
 
-    node_path = os.path.join(r"Cache/SNA_results/", config_manager.get_combined_analysis_file_name(),
+    node_path = os.path.join(r"", cache_dir, "/SNA_results/",
+                             config_manager.get_combined_analysis_file_name(),
                              save_directory, r"node_sna_metrics.json")
-    edge_path = os.path.join(r"Cache/SNA_results/", config_manager.get_combined_analysis_file_name(),
+    edge_path = os.path.join(r"", cache_dir, "/SNA_results/",
+                             config_manager.get_combined_analysis_file_name(),
                              save_directory, r"edge_sna_metrics.json")
 
     os.makedirs(os.path.dirname(node_path), exist_ok=True)
@@ -128,7 +131,7 @@ def network_analysis(graph, save_directory):
 def get_subgraphs(graph, save_directory):
     """Searches and saves communities found in a NetworkX chart."""
 
-    directory = f"Cache/subgraphs/{config_manager.get_combined_analysis_file_name()}"
+    directory = f"{cache_dir}/subgraphs/{config_manager.get_combined_analysis_file_name()}"
     full_directory = os.path.join(directory, save_directory)
     os.makedirs(os.path.dirname(full_directory), exist_ok=True)
 
@@ -166,7 +169,8 @@ def export_graph(graph, save_directory):
     """Export a NetworkX chart"""
     data1 = nx.node_link_data(graph, edges="edges")
     json_graph = json.dumps(data1, indent=4)
-    directory = os.path.join("Cache/graph_export/", config_manager.get_combined_analysis_file_name(),
+    directory = os.path.join(f"{cache_dir}/graph_export/",
+                             config_manager.get_combined_analysis_file_name(),
                              save_directory, "networkx_export.json")
 
     os.makedirs(os.path.dirname(directory), exist_ok=True)

@@ -3,8 +3,8 @@ import json
 import requests
 import re
 
-CACHE_FILE = "Cache/location_cache_geojson.json"
-CACHE_DIR = os.path.dirname(CACHE_FILE) # Extract the directory path "Cache"
+CACHE_FILE = "cache/location_cache_geojson.json"
+CACHE_DIR = os.path.dirname(CACHE_FILE) # Extract the directory path "cache"
 
 # 1. Check and create the directory if it does not exist
 if not os.path.exists(CACHE_DIR):
@@ -20,7 +20,7 @@ if os.path.exists(CACHE_FILE):
         # Use a try/except block to catch potential JSON decoding errors (e.g., if the file is empty)
         try:
             cache = json.load(f)
-            print("Cache loaded successfully.")
+            print("cache loaded successfully.")
         except json.JSONDecodeError:
             print("Error decoding JSON from cache file. Starting with an empty cache.")
 

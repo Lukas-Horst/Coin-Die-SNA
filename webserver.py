@@ -16,13 +16,7 @@ from cluster_to_graph import imagecluster_get_cluster, get_coin_findspots, map_c
 from findspot_geolocation import get_findspot_osmtypeid
 from config.config_manager import ConfigManager
 from data_utils import find_file
-
-try:
-    from matching_plot import get_matches_plot
-
-    auto_die_studies_available = True
-except ImportError:
-    auto_die_studies_available = False
+from visualization.visualization_wrapper import VisualizationWrapper
 
 
 app = Flask(__name__)
@@ -49,7 +43,7 @@ def graphdata_api():
     filterTime = request.args.get("filterTime", "X")
     filterAvRv = request.args.get("filterAvRv", "")
 
-    file_path = (f"Cache/graph_export/{config_manager.get_combined_analysis_file_name()}/"
+    file_path = (f"{cache_dir}/graph_export/{config_manager.get_combined_analysis_file_name()}/"
                  f"{filterTime}_{filterAvRv}/networkx_export.json")
 
     if not os.path.exists(file_path):
@@ -330,15 +324,25 @@ def coinmatching_img():
     Returns:
         Response: A JPEG image showing the matches if available, otherwise string "not available".
     """
-    if not auto_die_studies_available:
-        return "not available"
-
     coin_id1 = request.args.get("coinid1", "")
     coin_id2 = request.args.get("coinid2", "")
     side = request.args.get("side", "r")
 
-    num_matches, img_matches = get_matches_plot(coin_id1, coin_id2, side)
-    return send_file(img_matches, mimetype="image/jpeg")
+    try:
+        files = config_manager.get_images_by_id_and_side(coin_id1, coin_id2, side)
+        if not files or files[0] is None or files[1] is None:
+            return "Images not found", 404
+        # Run Wrapper
+        num_matches, img_matches_buffer = vis_wrapper.run(files[0], files[1], coin_id1, coin_id2,
+            side)
+
+        if img_matches_buffer is None:
+            return "Visualization Failed (Check Server Logs)", 500
+
+        return send_file(img_matches_buffer, mimetype="image/jpeg")
+    except Exception as e:
+        print(f"Visualization Error: {e}")
+        return f"Error during visualization: {e}", 500
 
 
 @app.route("/snametricsnode")
@@ -356,7 +360,7 @@ def snametrics_node():
     filterTime = request.args.get("filterTime", "X")
     filterAvRv = request.args.get("filterAvRv", "")
 
-    file_path = (f"Cache/SNA_results/{config_manager.get_combined_analysis_file_name()}/"
+    file_path = (f"{cache_dir}/SNA_results/{config_manager.get_combined_analysis_file_name()}/"
                  f"{filterTime}_{filterAvRv}/node_sna_metrics.json")
 
     if not os.path.exists(file_path):
@@ -388,7 +392,7 @@ def snametrics_edge():
     filterTime = request.args.get("filterTime", "X")
     filterAvRv = request.args.get("filterAvRv", "")
 
-    file_path = (f"Cache/SNA_results/{config_manager.get_combined_analysis_file_name()}/"
+    file_path = (f"{cache_dir}/SNA_results/{config_manager.get_combined_analysis_file_name()}/"
                  f"{filterTime}_{filterAvRv}/edge_sna_metrics.json")
 
     if not os.path.exists(file_path):
@@ -421,7 +425,7 @@ def communities():
     filterTime = request.args.get("filterTime", "X")
     filterAvRv = request.args.get("filterAvRv", "")
 
-    file_path = (f"Cache/subgraphs/{config_manager.get_combined_analysis_file_name()}/"
+    file_path = (f"{cache_dir}/subgraphs/{config_manager.get_combined_analysis_file_name()}/"
                  f"{filterTime}_{filterAvRv}/community_data.json")
 
     if not os.path.exists(file_path):
@@ -440,4 +444,6 @@ def communities():
 
 if __name__ == "__main__":
     config_manager = ConfigManager('Coin-Die-SNA-Interface/config/config.json')
+    cache_dir = config_manager.config["paths"]["cache_dir"]
+    vis_wrapper = VisualizationWrapper(config_manager)
     app.run(host="0.0.0.0", port=5001, debug=True)
