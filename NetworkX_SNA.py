@@ -107,18 +107,14 @@ def network_analysis(graph, save_directory):
                 "av_neighbor_degree": av_neighbor_degree.get(node, 0),
             }
         )
-
     for a, b in graph.edges():
         key = tuple(sorted((a, b)))
         sna_edge_metrics.append({"From": a, "To": b, "edge_betweeness_centrality": edge_betweeness_centrality.get(key, 0), "edge_load_centrality": edge_load_centrality.get(key, 0)})
 
-    node_path = os.path.join(r"", cache_dir, "/SNA_results/",
-                             config_manager.get_combined_analysis_file_name(),
-                             save_directory, r"node_sna_metrics.json")
-    edge_path = os.path.join(r"", cache_dir, "/SNA_results/",
-                             config_manager.get_combined_analysis_file_name(),
-                             save_directory, r"edge_sna_metrics.json")
-
+    base_output_path = os.path.join(cache_dir, "SNA_results",
+        config_manager.get_combined_analysis_file_name(), save_directory)
+    node_path = os.path.join(base_output_path, "node_sna_metrics.json")
+    edge_path = os.path.join(base_output_path, "edge_sna_metrics.json")
     os.makedirs(os.path.dirname(node_path), exist_ok=True)
 
     with open(node_path, "w") as f:

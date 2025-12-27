@@ -144,11 +144,6 @@ def construct_graph(cluster_file, side):
     findspot_coords = get_findspot_coordinates(findspots)
     clusters_at_findspot = map_clusters_to_findspots(clusters, coin_findspots)
     cluster_times = get_cluster_times(clusters, side)
-    # print(clusters)
-    # print(coin_findspots)
-    # print(findspots)
-    # print(clusters_at_findspot)
-    # print(cluster_times)
 
     # Nodes
     nodes = []
