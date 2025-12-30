@@ -8,3 +8,5 @@ torch
 scikit-image
 opencv-python
 requests
+imageio
+tqdm

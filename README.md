@@ -1,5 +1,6 @@
 # Coin-Die-SNA
-Social Network Analysis based on die studies of ancient coin collections and their findspots.
+
+**Coin-Die-SNA** is a specialized web application designed for the network-analytical evaluation and visualization of numismatic die studies. It bridges the gap between computer vision results and historical analysis by visualizing connections between die clusters and findspots on interactive maps and graphs. This allows researchers to explore distribution patterns and verify die identities through visual keypoint matching.
 
 ## Architecture & Submodule
 
@@ -7,10 +8,33 @@ This application relies on a modular backend to handle data processing and pipel
 
 * **Backend / Interface:** [https://github.com/Lukas-Horst/Coin-Die-SNA-Interface](https://github.com/Lukas-Horst/Coin-Die-SNA-Interface)
 
-> **Installation Note:** When cloning this repository, ensure you also initialize the submodule:
+> **Cloning Note:** When cloning this repository, ensure you also initialize the submodule:
 > ```bash
-> git clone --recurse-submodules <REPO_URL>
+> git clone --recurse-submodules https://github.com/Lukas-Horst/Coin-Die-SNA
 > ```
+
+## Installation & Dependencies
+
+To run the application, you must install the necessary Python libraries. The requirements are split into three parts:
+
+1.  **Main Application:** Install the dependencies for the web server and frontend logic found in the root directory.
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+2.  **Interface Submodule:** Install the core dependencies for the backend interface.
+    ```bash
+    pip install -r Coin-Die-SNA-Interface/requirements.txt
+    ```
+
+3.  **Pipelines:** Depending on which analysis pipeline(s) you intend to use (e.g., *Auto-Die-Studies* or *DieStudyTool*), you must install their specific dependencies. These are located within the respective pipeline folders inside the submodule.
+    ```bash
+    # Example: Install requirements for Auto-Die-Studies
+    pip install -r Coin-Die-SNA-Interface/die_studies/auto_die_studies/requirements.txt
+    
+    # Example: Install requirements for DieStudyTool
+    pip install -r Coin-Die-SNA-Interface/die_studies/die_study_tool/requirements.txt
+    ```
 
 ## Configuration
 
