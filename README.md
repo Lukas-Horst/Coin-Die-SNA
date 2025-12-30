@@ -1,6 +1,6 @@
 # Coin-Die-SNA
 
-**Coin-Die-SNA** is a specialized web application designed for the network-analytical evaluation and visualization of numismatic die studies. It bridges the gap between computer vision results and historical analysis by visualizing connections between die clusters and findspots on interactive maps and graphs. This allows researchers to explore distribution patterns and verify die identities through visual keypoint matching.
+**Coin-Die-SNA** is a specialized web application designed for the network-analytical evaluation and visualization of numismatic die studies.
 
 ## Architecture & Submodule
 
